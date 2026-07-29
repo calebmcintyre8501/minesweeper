@@ -1,0 +1,54 @@
+.cell {
+  width: 36px;
+  height: 36px;
+
+  margin: 0;
+  padding: 0;
+
+  border: 2px solid #7b7b7b;
+  background: #c0c0c0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cell.revealed {
+  background-color: #d9d9d9;
+  border: 1px solid #999;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
+  color: #000;
+  cursor: default;
+}
+
+.cell.number-1 {
+  color: blue;
+}
+
+.cell.number-2 {
+  color: green;
+}
+
+.cell.number-3 {
+  color: red;
+}
+
+.cell.number-4 {
+  color: darkblue;
+}
+
+.cell.number-5 {
+  color: maroon;
+}
+
+.cell.number-6 {
+  color: teal;
+}
+
+.cell.number-7 {
+  color: black;
+}
+
+.cell.number-8 {
+  color: gray;
+}
