@@ -1,8 +1,9 @@
 .board {
   display: inline-block;
-  border: 6px solid #bdbdbd;
+  max-width: 100%;
+  padding: 4px;
+  border: 4px solid #bdbdbd;
   background-color: #555;
-  padding: 2px;
 }
 
 .board-row {

@@ -5,7 +5,7 @@ export const revealCell = (board, startingRow, startingColumn) => {
 
   const startingCell = boardCopy[startingRow][startingColumn]
 
-  if (startingCell.isRevealed) {
+  if (startingCell.isRevealed || startingCell.isFlagged) {
     return boardCopy
   }
 
@@ -48,7 +48,8 @@ export const revealCell = (board, startingRow, startingColumn) => {
         if (
           neighbor &&
           !neighbor.isRevealed &&
-          !neighbor.isMine
+          !neighbor.isMine &&
+          !neighbor.isFlagged
         ) {
           cellsToCheck.push([neighborRow, neighborColumn])
         }

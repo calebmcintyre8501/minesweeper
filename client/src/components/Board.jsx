@@ -1,7 +1,7 @@
 import Cell from "./Cell"
 import "./Board.css"
 
-function Board({ board, onCellClick }) {
+function Board({ board, onCellClick, onFlagCell }) {
   return (
     <section className="board">
       {board.map((row, rowIndex) => (
@@ -11,12 +11,13 @@ function Board({ board, onCellClick }) {
               key={`${cell.row}-${cell.column}`}
               cell={cell}
               onCellClick={onCellClick}
+              onFlagCell={onFlagCell}
             />
           ))}
         </div>
       ))}
     </section>
-  );
+  )
 }
 
 export default Board

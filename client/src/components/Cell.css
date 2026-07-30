@@ -1,24 +1,48 @@
 .cell {
-  width: 36px;
-  height: 36px;
-
-  margin: 0;
-  padding: 0;
-
-  border: 2px solid #7b7b7b;
-  background: #c0c0c0;
-
+  width: var(--cell-size);
+  height: var(--cell-size);
+  flex: 0 0 var(--cell-size);
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0;
+  border: 2px solid #7b7b7b;
+  background: #c0c0c0;
+  font-size: clamp(10px, 1vw, 14px);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.difficulty-easy {
+  --cell-size: min(
+    36px,
+    calc((100vw - 48px) / 10)
+  );
+}
+
+.difficulty-medium {
+  --cell-size: min(
+    32px,
+    calc((100vw - 48px) / 16)
+  );
+}
+
+.difficulty-hard {
+  --cell-size: min(
+    28px,
+    calc((100vw - 48px) / 30)
+  );
 }
 
 .cell.revealed {
-  background-color: #d9d9d9;
   border: 1px solid #999;
-  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
-  color: #000;
+  background-color: #d9d9d9;
+  box-shadow: inset 1px 1px 2px rgb(0 0 0 / 20%);
   cursor: default;
+}
+
+.cell:disabled {
+  opacity: 1;
 }
 
 .cell.number-1 {
@@ -53,6 +77,31 @@
   color: gray;
 }
 
-.cell:disabled {
-  opacity: 1;
+@media (max-width: 1200px) {
+  .difficulty-hard {
+    --cell-size: min(
+      28px,
+      calc((100vw - 64px) / 30)
+    );
+  }
+}
+
+@media (max-width: 700px) {
+  .difficulty-easy {
+    --cell-size: min(
+      34px,
+      calc((100vw - 40px) / 10)
+    );
+  }
+
+  .difficulty-medium {
+    --cell-size: min(
+      30px,
+      calc((100vw - 40px) / 16)
+    );
+  }
+
+  .difficulty-hard {
+    --cell-size: calc((100vw - 40px) / 30);
+  }
 }

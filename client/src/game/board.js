@@ -10,6 +10,7 @@ export const createEmptyBoard = (rows = 10, columns = 10) => {
         column,
         isMine: false,
         isRevealed: false,
+        isFlagged: false,
         adjacentMineCount: 0,
       });
     }
