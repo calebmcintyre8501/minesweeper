@@ -1,28 +1,29 @@
-import "./Cell.css";
+import "./Cell.css"
 
 function Cell({ cell, onCellClick }) {
-  let cellContent = "";
+  let cellContent = ""
 
   if (cell.isRevealed && cell.isMine) {
-    cellContent = "💣";
+    cellContent = "💣"
   } else if (cell.isRevealed && cell.adjacentMineCount > 0) {
-    cellContent = cell.adjacentMineCount;
+    cellContent = cell.adjacentMineCount
   }
 
   const numberClass =
     cell.isRevealed && !cell.isMine && cell.adjacentMineCount > 0
       ? `number-${cell.adjacentMineCount}`
-      : "";
+      : ""
 
   return (
     <button
       className={`cell ${cell.isRevealed ? "revealed" : ""} ${numberClass}`}
       type="button"
       onClick={() => onCellClick(cell.row, cell.column)}
+      disabled={cell.isRevealed}
     >
       {cellContent}
     </button>
-  );
+  )
 }
 
-export default Cell;
+export default Cell

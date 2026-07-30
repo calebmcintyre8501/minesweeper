@@ -1,5 +1,5 @@
-import Cell from "./Cell";
-import "./Board.css";
+import Cell from "./Cell"
+import "./Board.css"
 
 function Board({ board, onCellClick }) {
   return (
@@ -19,4 +19,4 @@ function Board({ board, onCellClick }) {
   );
 }
 
-export default Board;
+export default Board

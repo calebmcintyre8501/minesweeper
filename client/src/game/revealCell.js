@@ -3,31 +3,31 @@ export const revealCell = (board, startingRow, startingColumn) => {
     row.map((cell) => ({ ...cell }))
   );
 
-  const startingCell = boardCopy[startingRow][startingColumn];
+  const startingCell = boardCopy[startingRow][startingColumn]
 
   if (startingCell.isRevealed) {
-    return boardCopy;
+    return boardCopy
   }
 
   if (startingCell.isMine) {
     startingCell.isRevealed = true;
-    return boardCopy;
+    return boardCopy
   }
 
-  const cellsToCheck = [[startingRow, startingColumn]];
+  const cellsToCheck = [[startingRow, startingColumn]]
 
   while (cellsToCheck.length > 0) {
-    const [row, column] = cellsToCheck.pop();
-    const currentCell = boardCopy[row][column];
+    const [row, column] = cellsToCheck.pop()
+    const currentCell = boardCopy[row][column]
 
     if (currentCell.isRevealed || currentCell.isMine) {
-      continue;
+      continue
     }
 
-    currentCell.isRevealed = true;
+    currentCell.isRevealed = true
 
     if (currentCell.adjacentMineCount > 0) {
-      continue;
+      continue
     }
 
     for (let rowOffset = -1; rowOffset <= 1; rowOffset++) {
@@ -37,11 +37,11 @@ export const revealCell = (board, startingRow, startingColumn) => {
         columnOffset++
       ) {
         if (rowOffset === 0 && columnOffset === 0) {
-          continue;
+          continue
         }
 
-        const neighborRow = row + rowOffset;
-        const neighborColumn = column + columnOffset;
+        const neighborRow = row + rowOffset
+        const neighborColumn = column + columnOffset
 
         const neighbor = boardCopy[neighborRow]?.[neighborColumn];
 
@@ -50,11 +50,26 @@ export const revealCell = (board, startingRow, startingColumn) => {
           !neighbor.isRevealed &&
           !neighbor.isMine
         ) {
-          cellsToCheck.push([neighborRow, neighborColumn]);
+          cellsToCheck.push([neighborRow, neighborColumn])
         }
       }
     }
   }
 
-  return boardCopy;
+  return boardCopy
+};
+
+export const revealAllMines = (board) => {
+  return board.map((row) =>
+    row.map((cell) => {
+      if (cell.isMine) {
+        return {
+          ...cell,
+          isRevealed: true,
+        };
+      }
+
+      return cell;
+    })
+  );
 };

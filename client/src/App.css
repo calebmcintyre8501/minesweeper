@@ -13,3 +13,29 @@ main {
   justify-content: center;
   align-items: center;
 }
+
+.game-container {
+  text-align: center;
+}
+
+.game-header {
+  margin-bottom: 16px;
+}
+
+.game-header h1 {
+  margin-top: 0;
+}
+
+.game-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.game-info button {
+  padding: 8px 14px;
+  font-weight: bold;
+  cursor: pointer;
+}

@@ -52,3 +52,7 @@
 .cell.number-8 {
   color: gray;
 }
+
+.cell:disabled {
+  opacity: 1;
+}
