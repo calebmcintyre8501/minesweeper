@@ -10,7 +10,13 @@ import {
 } from "./game/revealCell"
 import { hasWon } from "./game/hasWon"
 import { toggleFlag } from "./game/toggleFlag"
+import {
+  getUserGames,
+  loginUser,
+  saveGame,
+} from "./api"
 import Board from "./components/Board"
+import Login from "./components/Login"
 import "./App.css"
 
 const difficulties = {
@@ -20,13 +26,13 @@ const difficulties = {
     mines: 10,
   },
   medium: {
-    rows: 16,
-    columns: 16,
-    mines: 40,
+    rows: 15,
+    columns: 15,
+    mines: 30,
   },
   hard: {
-    rows: 16,
-    columns: 30,
+    rows: 20,
+    columns: 20,
     mines: 99,
   },
 }
@@ -47,7 +53,20 @@ const createNewBoard = (difficulty) => {
   return calculateAdjacentMineCounts(boardWithMines)
 }
 
+const formatGameFromApi = (game) => {
+  return {
+    id: game.id,
+    result: game.result,
+    difficulty:
+      game.difficulty.charAt(0).toUpperCase() +
+      game.difficulty.slice(1),
+    time: game.completion_time,
+    date: new Date(game.completed_at).toLocaleString(),
+  }
+}
+
 function App() {
+  const [user, setUser] = useState(null)
   const [difficulty, setDifficulty] = useState("easy")
   const [board, setBoard] = useState(() =>
     createNewBoard("easy")
@@ -56,6 +75,7 @@ function App() {
   const [hasStarted, setHasStarted] = useState(false)
   const [gameStatus, setGameStatus] = useState("playing")
   const [gameHistory, setGameHistory] = useState([])
+  const [saveError, setSaveError] = useState("")
 
   useEffect(() => {
     if (!hasStarted || gameStatus !== "playing") {
@@ -69,20 +89,51 @@ function App() {
     return () => clearInterval(timer)
   }, [hasStarted, gameStatus])
 
-  const addGameToHistory = (result) => {
-    const newGame = {
-      result,
-      difficulty:
-        difficulty.charAt(0).toUpperCase() +
-        difficulty.slice(1),
-      time: seconds,
-      date: new Date().toLocaleString(),
+  const handleLogin = async (username) => {
+    const loggedInUser = await loginUser(username)
+    const savedGames = await getUserGames(
+      loggedInUser.username
+    )
+
+    setUser(loggedInUser)
+    setGameHistory(savedGames.map(formatGameFromApi))
+  }
+
+  const handleLogout = () => {
+    setUser(null)
+    setGameHistory([])
+    setSaveError("")
+    setDifficulty("easy")
+    setBoard(createNewBoard("easy"))
+    setGameStatus("playing")
+    setSeconds(0)
+    setHasStarted(false)
+  }
+
+  const addGameToHistory = async (result) => {
+    if (!user) {
+      return
     }
 
-    setGameHistory((currentHistory) => [
-      newGame,
-      ...currentHistory,
-    ])
+    try {
+      setSaveError("")
+
+      const savedGame = await saveGame(user.username, {
+        result,
+        difficulty,
+        completionTime: seconds,
+      })
+
+      const formattedGame = formatGameFromApi(savedGame)
+
+      setGameHistory((currentHistory) => [
+        formattedGame,
+        ...currentHistory,
+      ])
+    } catch (error) {
+      console.error("Unable to save game:", error)
+      setSaveError(error.message)
+    }
   }
 
   const handleFlagCell = (row, column) => {
@@ -140,6 +191,7 @@ function App() {
     setGameStatus("playing")
     setSeconds(0)
     setHasStarted(false)
+    setSaveError("")
   }
 
   const handleDifficultyChange = (event) => {
@@ -150,6 +202,7 @@ function App() {
     setGameStatus("playing")
     setSeconds(0)
     setHasStarted(false)
+    setSaveError("")
   }
 
   const flagCount = board
@@ -160,13 +213,32 @@ function App() {
   const minesRemaining =
     difficulties[difficulty].mines - flagCount
 
+  if (!user) {
+    return <Login onLogin={handleLogin} />
+  }
+
   return (
     <main>
       <div
         className={`game-container difficulty-${difficulty}`}
       >
         <header className="game-header">
-          <h1>Minesweeper</h1>
+          <div className="title-row">
+            <div>
+              <h1>Minesweeper</h1>
+              <p className="welcome-message">
+                Playing as <strong>{user.username}</strong>
+              </p>
+            </div>
+
+            <button
+              type="button"
+              className="logout-button"
+              onClick={handleLogout}
+            >
+              Log Out
+            </button>
+          </div>
 
           <div className="game-info">
             <span>
@@ -207,6 +279,13 @@ function App() {
           </div>
         </header>
 
+        {saveError && (
+          <p className="save-error">
+            Your game ended, but it could not be saved:{" "}
+            {saveError}
+          </p>
+        )}
+
         <div className="game-layout">
           <section className="board-section">
             <Board
@@ -226,7 +305,12 @@ function App() {
             ) : (
               <ul>
                 {gameHistory.map((game, index) => (
-                  <li key={`${game.date}-${index}`}>
+                  <li
+                    key={
+                      game.id ??
+                      `${game.date}-${index}`
+                    }
+                  >
                     <div className="history-summary">
                       <strong>{game.result}</strong>
                       <span>{game.difficulty}</span>
